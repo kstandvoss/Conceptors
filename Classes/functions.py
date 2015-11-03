@@ -71,6 +71,7 @@ def IntWeights(N, M,connectivity):
             succ = True
             return W_raw
         except:
+            print 'here'
             pass
   
 def NRMSE(output, target):
