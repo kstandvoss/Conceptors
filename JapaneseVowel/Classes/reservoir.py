@@ -58,18 +58,14 @@ class Reservoir:
 		self.W_out = np.zeros((self.outputDim, self.N))
 
 
-
-	def batchLoadingWithConceptorsPost(	self,
-										patterns,
-										t_washout = 100,
-										t_learn = 1000,
-										alpha_wout = 0.01,
-										alpha_load = 0.0001,
-										aperture = 10):
+	def collectStates(	self,
+						patterns,
+						t_washout = 100,
+						t_learn = 1000,
+						mode = 'function'):
 
 		stateColl = np.zeros((self.N, t_learn*len(patterns)))
 		inputColl = np.zeros((self.inputDim, t_learn*len(patterns)))
-		self.conceptors = []
 
 		for i_pat, pattern in enumerate(patterns):
 
@@ -79,9 +75,15 @@ class Reservoir:
 
 			for t in range(t_washout + t_learn):
 
-				u = pattern(t)
-				if not isinstance(u, np.ndarray):
-					u = np.array([[u]])
+				if mode == 'function':
+					u = pattern(t)
+					if not isinstance(u, np.ndarray):
+						u = np.array([[u]])
+
+				elif mode == 'batch':
+					u = pattern[t, :, None]
+
+					print(u.shape)
 
 				x = np.tanh(self.W_res @ x + self.W_in @ u + self.W_bias)
 
@@ -89,8 +91,32 @@ class Reservoir:
 					stateColl[:, offset + t - t_washout] = x.T
 					inputColl[:, offset + t - t_washout] = u.T
 
-			thisPatternStateColl = stateColl[:, offset:offset + t_learn]
-			R = (thisPatternStateColl @ thisPatternStateColl.T) / t_learn
+		return stateColl, inputColl
+
+
+
+
+	def loadingAndConceptors(	self,
+								patterns,
+								t_washout = 100,
+								t_learn = 1000,
+								alpha_wout = 0.01,
+								alpha_load = 0.0001,
+								aperture = 10):
+
+		stateColl, inputColl = self.collectStates(patterns, t_washout, t_learn)
+
+
+		self.conceptors = []
+		for i_pat, pattern in enumerate(patterns):
+
+			x = np.zeros((self.N, 1))
+			
+			offset = i_pat*t_learn
+
+			statesForPattern = stateColl[:, offset : offset + t_learn]
+
+			R = (statesForPattern @ statesForPattern.T) / t_learn
 			U,S,V = np.linalg.svd(R, full_matrices=True)
 			S = np.diag(S)
 			I = np.eye(self.N)
@@ -122,15 +148,15 @@ class Reservoir:
 
 
 
-	def batchLoadingWithConceptorsGradient(	self,
-											patterns,
-											t_washout = 500,
-											t_learn = 1000,
-											alpha_wout = 0.01,
-											alpha_load = 0.0001,
-											aperture = 10,
-											learning_rate = 0.01,
-											gradient_cut = 2.0):
+	def loadingAndConceptorsGradient(	self,
+										patterns,
+										t_washout = 500,
+										t_learn = 1000,
+										alpha_wout = 0.01,
+										alpha_load = 0.0001,
+										aperture = 10,
+										learning_rate = 0.01,
+										gradient_cut = 2.0):
 
 		stateColl = np.zeros((self.N, t_learn*len(patterns)))
 		inputColl = np.zeros((self.inputDim, t_learn*len(patterns)))
