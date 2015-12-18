@@ -5,6 +5,9 @@ BIRDDB_FILE_BASE_URL = "http://taylor0.biology.ucla.edu/birdDBQuery/Files/"
 RECORDINGS_DIR = "recordings/"
 TEXTGRID_DIR = "textgrid_files/"
 
+CSV_INPUT_FILE = "BirdDB Query Results.csv"
+CSV_WITH_FILENAMES = "birddb.csv"
+
 # Define main func so that all the helper functions can be
 # defined together later in the file
 function main()
@@ -23,7 +26,7 @@ function main()
     # import the csv from the database
     info("Reading csv of database dump")
 
-    birddb_data = readtable("BirdDB Query Results.csv")
+    birddb_data = readtable(CSV_INPUT_FILE)
     # use less data for testing
     birddb_data = birddb_data[1:5,:]
 
@@ -34,6 +37,8 @@ function main()
 
     info("Starting to download the files")
     download_files(birddb_data)
+
+    writetable(CSV_WITH_FILENAMES, birddb_data)
 end
 
 function get_recording_filepaths(textgrid_filepathes::DataArrays.DataArray{UTF8String,1})
