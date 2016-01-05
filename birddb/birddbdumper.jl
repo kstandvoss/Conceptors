@@ -1,3 +1,6 @@
+Pkg.add("DataFrames")
+Pkg.add("Requests")
+
 using DataFrames
 using Requests
 
