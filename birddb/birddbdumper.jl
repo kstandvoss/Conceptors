@@ -28,7 +28,7 @@ function main()
 
     birddb_data = readtable(CSV_INPUT_FILE)
     # use less data for testing
-    birddb_data = birddb_data[1:5,:]
+    #birddb_data = birddb_data[1:5,:]
 
     birddb_data[:recording_file_url] = get_recording_filepaths(birddb_data[:Textgrid_file])
 
@@ -38,6 +38,7 @@ function main()
     info("Starting to download the files")
     download_files(birddb_data)
 
+    info("Writing out a csv with the filenames attached to $CSV_WITH_FILENAMES")
     writetable(CSV_WITH_FILENAMES, birddb_data)
 end
 
