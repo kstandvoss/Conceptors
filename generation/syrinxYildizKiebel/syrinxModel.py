@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 # ----- PART 1: Setup -----
 
@@ -21,6 +22,7 @@ k0 = 7.6e8
 k1 = 7e8
 b = 1000
 c = 1e8
+theta = 3
 
 # scaling functions
 S = lambda x: 1.0/(1+np.exp(-x))
@@ -91,7 +93,8 @@ I_k = lambda k: c_I * phi(x_star[k]) - W @ phi(x_star[k])
 # combined input function over all HVC ensembles
 I = lambda v: sum([v[k]*I_k(k) for k in range(N)])
 
-
+# angular frequencies for oscillations
+f_i = np.arange(1,n+1)*0.06
 
 
 
@@ -126,6 +129,18 @@ x2_coll = np.zeros((sampleLength,n))
 v2_coll = np.zeros((sampleLength,n))
 w2_coll = np.zeros((sampleLength,n))
 
+### init Oscillation ###
+
+x1 = np.zeros(n)
+y1 = np.zeros(n)
+v1 = 0
+w1 = 0
+
+x1_coll = np.zeros((sampleLength,n))
+y1_coll = np.zeros((sampleLength,n))
+v1_coll = np.zeros(sampleLength)
+w1_coll = np.zeros(sampleLength)
+
 ### actual loop ###
 
 print("Eulering around...")
@@ -158,6 +173,28 @@ for i, t in enumerate(np.arange(0,timespan,stepsize)):
 
     w2 = G(x2) + w_3(n)
     w2_coll[i, :] = w2
+
+    # Oscillation equations
+
+    dx1 = np.zeros(n)
+    dy1 = np.zeros(n)
+    for j in range(n):
+        dx1[j] = v2[j] * np.sqrt(1 + (f_i[j]*kappa1)**2) * np.sin(f_i[j]*kappa1*t) - x1[j] + w_1(1)
+        dy1[j] = v2[j] * np.sqrt(1 + (f_i[j]*kappa1)**2) * np.sin(f_i[j]*(kappa1*t - theta)) - y1[j] + w_2(1)
+
+    x1 += stepsize*dx1
+    x1_coll[i, :] = x1
+
+    y1 += stepsize*dy1
+    y1_coll[i, :] = y1
+
+    v1 = sum([w2[j]*x1[j] + w_3(1) for j in range(n)])
+    v1_coll[i] = v1
+
+    w1 = sum([w2[j]*y1[j] + w_4(1) for j in range(n)])
+    w1_coll[i] = w1
+
+
 
 
 # ----- PART 3: Plotting -----
@@ -192,6 +229,22 @@ for i in range(n):
     plt.plot(t_coll, v2_coll[:,i])
     plt.plot(t_coll, w2_coll[:,i])
     axlines()
+
+# plot oscillations
+
+plt.figure("Oscillations - x1")
+for i in range(n):
+    plt.plot(t_coll, x1_coll[:,i])
+
+plt.figure("Oscillations - y1")
+for i in range(n):
+    plt.plot(t_coll, y1_coll[:,i])
+
+plt.figure("Oscillations - v1")
+plt.plot(t_coll, v1_coll)
+
+plt.figure("Oscillations - w1")
+plt.plot(t_coll, w1_coll)
 
 
 plt.show()
