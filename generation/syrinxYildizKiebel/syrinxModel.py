@@ -1,6 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import bigfloat
+from bigfloat import BigFloat
+import math
+import scipy.integrate
 
 # ----- PART 1: Setup -----
 
@@ -103,7 +107,7 @@ f_i = np.arange(1,n+1)*0.06
 
 ### init euler loop ###
 
-timespan = 500
+timespan = 10
 stepsize = 0.1
 sampleLength = timespan/stepsize
 t_coll = np.zeros(sampleLength)
@@ -146,7 +150,7 @@ w1_coll = np.zeros(sampleLength)
 print("Eulering around...")
 for i, t in enumerate(np.arange(0,timespan,stepsize)):
 
-    # collect times and plot progress
+    # collect times and print progress
 
     t_coll[i] = t
     percent = i*100.0/(sampleLength)
@@ -195,6 +199,89 @@ for i, t in enumerate(np.arange(0,timespan,stepsize)):
     w1_coll[i] = w1
 
 
+### syrinx runge kutta ###
+
+def p(t):
+    t_min = math.floor(t/stepsize)
+    t_max = math.floor(t/stepsize)+1
+    perc = (t-t_min)/(t_max-t_min)
+    v1_min = v1_coll[t_min]
+    v1_max = v1_coll[t_max]
+    v1 = v1_min + perc*(v1_max-v1_min)
+    return p1*v1+p0
+
+def k(t):
+    t_min = math.floor(t/stepsize)
+    t_max = math.floor(t/stepsize)+1
+    perc = (t-t_min)/(t_max-t_min)
+    w1_min = w1_coll[t_min]
+    w1_max = w1_coll[t_max]
+    w1 = w1_min + perc*(w1_max-w1_min)
+    return k1*w1+k0
+
+def func(f,t0): 
+    print("func called with f={}, t0={}".format(f,t0))
+    return np.array([f[1], (p(t0)-b)*f[1] - k(t0)*f[0] - c*f[0]*f[0]*f[1]])
+
+
+
+result = scipy.integrate.odeint(func, np.array([0.1,0.1]), np.arange(0,10), full_output=1)
+print(result)
+
+
+
+
+# ### syrinx loop with precision over 9000+ !!! ###
+
+# bigfloat.Context(precision=1000)
+
+# ### init loop ###
+
+# stepsize_big = BigFloat(10e-3)
+# sampleLength_big = timespan/stepsize_big
+# t_coll_big = np.zeros(sampleLength)
+
+# ### init Syrinx ###
+
+# x0 = BigFloat(0.1)
+# y0 = BigFloat(0.1)
+# p = BigFloat(0)
+# k = BigFloat(0)
+
+# x0_coll = np.zeros(sampleLength_big)
+# y0_coll = np.zeros(sampleLength_big)
+# p_coll = np.zeros(sampleLength_big)
+# k_coll = np.zeros(sampleLength_big)
+
+# i = 0
+# t = BigFloat(0)
+# print("Eulering around with max precision...")
+# while(i < sampleLength_big):
+
+#     # collect times and print progress
+
+#     t_coll_big[i] = t
+#     percent = i*100.0/(sampleLength_big)
+#     if percent*10%1 == 0:
+#         print("{}%".format(percent))
+
+#     # init mapping from previous loop indices
+
+#     lower_idx = t/sampleLength
+
+
+#     # syrinx equations
+
+#     dx0 = y0
+#     x0 += stepsize_big * dx0
+#     x0_coll[i, :] = x0
+
+
+
+#     # loop variables
+
+#     i += 1
+#     t += stepsize_big
 
 
 # ----- PART 3: Plotting -----
@@ -246,6 +333,13 @@ plt.plot(t_coll, v1_coll)
 plt.figure("Oscillations - w1")
 plt.plot(t_coll, w1_coll)
 
+# plot syrinx
+
+# plt.figure("Syrinx - x")
+# plt.plot(np.arange(0,10), result[:,0])
+
+# plt.figure("Syrinx - y")
+# plt.plot(np.arange(0,10), result[:,1])
 
 plt.show()
 
