@@ -55,7 +55,7 @@ def plot_interpolate_1d(patterns, Y_recalls, overSFac = 20, plotrange = 30):
         plot(xspace,Driver_PL)
         plot(xspace,Recall_PL)
       
-    print NRMSEsAlign
+    print(NRMSEsAlign)
 
 def IntWeights(N, M,connectivity):    
     
@@ -71,7 +71,7 @@ def IntWeights(N, M,connectivity):
             succ = True
             return W_raw
         except:
-            print 'here'
+            print('here')
             pass
   
 def NRMSE(output, target):
@@ -151,3 +151,5 @@ def sOR(c,b):
         else:                            d[i] = (c[i]+b[i]-2*c[i]*b[i])/(1-c[i]*b[i])   
     return d
     
+def phi(C, gamma):
+    return np.dot(C, np.linalg.inv(C+gamma**(-2)*(np.eye(len(C))-C)))
