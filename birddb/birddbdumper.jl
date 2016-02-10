@@ -72,13 +72,13 @@ end
 function download_files(birddb_data)
 
     # Download the files and save them to the proper place
-    for (url, out_file) in zip(birddb_data[:recording_file_url], birddb_data[:recording_filename])
+    @parallel (vcat) for (url, out_file) in collect(zip(birddb_data[:recording_file_url], birddb_data[:recording_filename]))
         info(out_file)
         recording_file = Requests.get("$(BIRDDB_FILE_BASE_URL)$(url)")
         save(recording_file, out_file)
     end
 
-    for (url, out_file) in zip(birddb_data[:Textgrid_file], birddb_data[:textgrid_filename])
+    @parallel (vcat) for (url, out_file) in collect(zip(birddb_data[:Textgrid_file], birddb_data[:textgrid_filename]))
         info(out_file)
         textgrid_file = Requests.get("$(BIRDDB_FILE_BASE_URL)$(url)")
         save(textgrid_file, out_file)
