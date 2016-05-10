@@ -5,6 +5,7 @@ import bigfloat
 from bigfloat import BigFloat
 import math
 import scipy.integrate
+import pickle
 
 # ----- PART 1: Setup -----
 
@@ -107,7 +108,7 @@ f_i = np.arange(1,n+1)*0.06
 
 ### init euler loop ###
 
-timespan = 10
+timespan = 500
 stepsize = 0.1
 sampleLength = timespan/stepsize
 t_coll = np.zeros(sampleLength)
@@ -201,35 +202,56 @@ for i, t in enumerate(np.arange(0,timespan,stepsize)):
 
 ### syrinx runge kutta ###
 
-def p(t):
-    t_min = math.floor(t/stepsize)
-    t_max = math.floor(t/stepsize)+1
-    perc = (t-t_min)/(t_max-t_min)
-    v1_min = v1_coll[t_min]
-    v1_max = v1_coll[t_max]
-    v1 = v1_min + perc*(v1_max-v1_min)
-    return p1*v1+p0
+# def p(t):
+#     t_min = math.floor(t/stepsize)
+#     t_max = math.floor(t/stepsize)+1
+#     perc = (t-t_min)/(t_max-t_min)
+#     v1_min = v1_coll[t_min]
+#     v1_max = v1_coll[t_max]
+#     v1 = v1_min + perc*(v1_max-v1_min)
+#     return p1*v1+p0
 
-def k(t):
-    t_min = math.floor(t/stepsize)
-    t_max = math.floor(t/stepsize)+1
-    perc = (t-t_min)/(t_max-t_min)
-    w1_min = w1_coll[t_min]
-    w1_max = w1_coll[t_max]
-    w1 = w1_min + perc*(w1_max-w1_min)
-    return k1*w1+k0
+# def k(t):
+#     t_min = math.floor(t/stepsize)
+#     t_max = math.floor(t/stepsize)+1
+#     perc = (t-t_min)/(t_max-t_min)
+#     w1_min = w1_coll[t_min]
+#     w1_max = w1_coll[t_max]
+#     w1 = w1_min + perc*(w1_max-w1_min)
+#     return k1*w1+k0
 
-def func(f,t0): 
-    print("func called with f={}, t0={}".format(f,t0))
-    return np.array([f[1], (p(t0)-b)*f[1] - k(t0)*f[0] - c*f[0]*f[0]*f[1]])
-
-
-
-result = scipy.integrate.odeint(func, np.array([0.1,0.1]), np.arange(0,10), full_output=1)
-print(result)
+# def func(t0,f):
+#     return np.array([f[1], (p(t0)-b)*f[1] - k(t0)*f[0] - c*f[0]*f[0]*f[1]])
 
 
 
+# r = scipy.integrate.ode(func).set_integrator('dopri5', first_step=1e-5, nsteps=10000000000)
+
+
+# t1 = 1
+# dt = 0.1
+# cnt = 0
+# sampleRate = 44100
+# t_coll_syrinx = []
+# x_coll_syrinx = []
+# y_coll_syrinx = []
+# def cb(t,y):
+#     global cnt
+#     global sampleRate
+#     if t - cnt/sampleRate > 1.0/sampleRate:
+#         t_coll_syrinx.append(t)
+#         x_coll_syrinx.append(y[0])
+#         y_coll_syrinx.append(y[1])
+#         cnt += 1
+#         print("added", t, y)
+
+# r.set_solout(cb)
+# r.set_initial_value(np.array([0.1,0.1]),0)
+# r.integrate(t1)
+
+# t_coll_syrinx = np.array(t_coll_syrinx)
+# x_coll_syrinx = np.array(x_coll_syrinx)
+# y_coll_syrinx = np.array(y_coll_syrinx)
 
 # ### syrinx loop with precision over 9000+ !!! ###
 
@@ -336,12 +358,22 @@ plt.plot(t_coll, w1_coll)
 # plot syrinx
 
 # plt.figure("Syrinx - x")
-# plt.plot(np.arange(0,10), result[:,0])
+# plt.plot(t_coll_syrinx, x_coll_syrinx)
 
 # plt.figure("Syrinx - y")
-# plt.plot(np.arange(0,10), result[:,1])
+# plt.plot(t_coll_syrinx, y_coll_syrinx)
+
+with open('w1_dump.pickle', 'wb') as f:
+	pickle.dump(w1_coll, f)
+
+
+
+
+np.savetxt("w1.csv", w1_coll)
+np.savetxt("v1.csv", v1_coll)
 
 plt.show()
+
 
 
 # ----- PART 4: Remarks/Tests/Other -----
