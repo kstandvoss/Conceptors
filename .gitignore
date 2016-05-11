@@ -2,5 +2,3 @@
 .DS_Store
 *.pyc
 *.swp
-# ignore all the sound samples in the syll folder
-/birddb/syll/*
