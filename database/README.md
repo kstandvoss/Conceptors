@@ -15,6 +15,6 @@ syllables.
 There are quite some programs around for analyzing textgrid data. The one recommended in the robindb
 sources is praat which looks roughly like this:
 
-![A song recording in praat](http://postimg.org/image/5d1tme2sh/ "Praat UI")
+![A song recording in praat](https://goo.gl/photos/Fi4EA26cz4pomGjY8 "Praat UI")
 
 But there are alot of alternatives (like [TextGridLab] (https://textgrid.de/en_US/download))
