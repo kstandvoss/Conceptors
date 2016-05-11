@@ -1,0 +1,6 @@
+RMBL-Robin database 
+A 78 minutes Robin song database collected by using a close-field song meter (www.wildlifeacoustics.com) at the Rocky Mountain Biological Laboratory near Crested Butte, Colorado in the summer of 2009 [3]. The recorded Robin songs are naturally corrupted by different kinds of background noises, such as wind, water and other vocal bird species. Non-target songs may overlap with target songs. Each song usually consists of 2-10 syllables. The timing boundaries and noise conditions of the syllables and songs, and human inferred syllable patterns are annotated.
+  The database is used for bird song detection. It can be downloaded from here.
+  To reference the RMBL-Robin database, please use the following:
+  W. Chu, D.T. Blumstein, “Noise robust bird song detection using syllable pattern-based hidden Markov models,” ICASSP 2011, pp. 345-348. 
+Please reference RMBL-Robin database when using it.
