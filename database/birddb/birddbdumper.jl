@@ -1,8 +1,10 @@
 Pkg.add("DataFrames")
 Pkg.add("Requests")
+Pkg.add("ArgParse")
 
 using DataFrames
 using Requests
+using ArgParse
 
 BIRDDB_FILE_BASE_URL = "http://taylor0.biology.ucla.edu/birdDBQuery/Files/"
 RECORDINGS_DIR = "recordings/"
@@ -13,7 +15,20 @@ CSV_WITH_FILENAMES = "birddb.csv"
 
 # Define main func so that all the helper functions can be
 # defined together later in the file
-function main()
+function main(args)
+
+    arg_table = ArgParseSettings()
+
+    @add_arg_table arg_table begin
+        "--recordings"
+            default=false
+            constant=true
+    end
+
+    parsed_args = parse_args(args, arg_table)
+    if ! parsed_args["recordings"]
+        info("Will not be downloading recordings. Run with --recordings if you want them")
+    end
 
     # create the file directories if they don't already exist
     info("Checking if file directories exist already")
@@ -39,7 +54,7 @@ function main()
     birddb_data[:textgrid_filename] = map( r -> "$(TEXTGRID_DIR)$(replace(r, r"(/)", s"-"))", birddb_data[:Textgrid_file])
 
     info("Starting to download the files")
-    download_files(birddb_data)
+    download_files(birddb_data, parsed_args)
 
     info("Writing out a csv with the filenames attached to $CSV_WITH_FILENAMES")
     writetable(CSV_WITH_FILENAMES, birddb_data)
@@ -69,14 +84,16 @@ function get_recording_filepaths(textgrid_filepathes::DataArrays.DataArray{UTF8S
     return recording_array
 end
 
-function download_files(birddb_data)
+function download_files(birddb_data, parsed_args)
 
     # Download the files and save them to the proper place
-    #@parallel (vcat) for (url, out_file) in collect(zip(birddb_data[:recording_file_url], birddb_data[:recording_filename]))
-    #    info(out_file)
-    #    recording_file = Requests.get("$(BIRDDB_FILE_BASE_URL)$(url)")
-    #    save(recording_file, out_file)
-    #end
+    if parsed_args["recordings"]
+        @parallel (vcat) for (url, out_file) in collect(zip(birddb_data[:recording_file_url], birddb_data[:recording_filename]))
+            info(out_file)
+            recording_file = Requests.get("$(BIRDDB_FILE_BASE_URL)$(url)")
+            save(recording_file, out_file)
+        end
+    end
 
     @parallel (vcat) for (url, out_file) in collect(zip(birddb_data[:Textgrid_file], birddb_data[:textgrid_filename]))
         info(out_file)
@@ -87,4 +104,4 @@ function download_files(birddb_data)
     nothing
 end
 
-main()
+main(ARGS)
