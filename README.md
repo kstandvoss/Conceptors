@@ -16,4 +16,7 @@ Information and sample files for birdsongs.
 
 #### Matlab
 
+#### Recognition
+The python files and results for the syllable recognition part.
+
 #### Sequence
