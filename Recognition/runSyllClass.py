@@ -358,5 +358,23 @@ parser.add_argument('-scriptsDir',
 
 """ run script via python shell """
 
-results = runSyllClass('D:/Data/Projects/StudyProject/syll', 30, cvalRuns = 10, trainN = 30, plotExample = True, incDer = [True, True], usePCA = False, biasScale = 0.5, gammaNeg = 20, gammaPos = 25, invCoeffOrder = True, melFramesN = 64, mfccN = 20, smoothL = 5, specRad = 1.1, winsize = 20, scriptsDir = 'C:/Users/asus/Dropbox/Conceptors/Task1_Recognition/runSyllClassScripts')
+results = runSyllClass('D:/Data/Projects/StudyProject/syll',
+        30,
+        cvalRuns = 10,
+        trainN = 30,
+        plotExample = True,
+        incDer = [True,
+        True],
+        usePCA = False,
+        biasScale = 0.5,
+        gammaNeg = 20,
+        gammaPos = 25,
+        invCoeffOrder = True,
+        melFramesN = 64,
+        mfccN = 20,
+        smoothL = 5,
+        specRad = 1.1,
+        winsize = 20,
+        scriptsDir = 'C:/Users/asus/Dropbox/Conceptors/Task1_Recognition/runSyllClassScripts'
+        )
 
