@@ -13,6 +13,9 @@ import argparse
 import pickle
 import sys
 
+import crossSylidation as cS
+import syllableClassifier as sC
+
 #%%
 
 """ Function """
@@ -51,13 +54,6 @@ def runSyllClass(path, syllN, trainN = 30, cvalRuns = 1, sampRate = 20000, inter
     :returns: cvalResults: Mean classification performance on test data over all runs for positive, negative and combined conceptors (list)
     """
     
-    """ import custom libraries """
-    
-    if scriptsDir:
-        sys.path.append(os.path.abspath(scriptsDir))
-    
-    import crossSylidation as cS
-    import syllableClassifier as sC
     
     path = os.path.abspath(path)
     
@@ -399,5 +395,4 @@ results = runSyllClass('D:/Data/Projects/StudyProject/syll',
         smoothL = 5,
         specRad = 1.1,
         winsize = 20,
-        scriptsDir = 'C:/Users/asus/Dropbox/Conceptors/Task1_Recognition/runSyllClassScripts'
         )
