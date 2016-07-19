@@ -214,31 +214,154 @@ def runSyllClass(path, syllN, trainN = 30, cvalRuns = 1, sampRate = 20000, inter
 
 parser = argparse.ArgumentParser(description = 'Passes arguments on to syllable Classifier function')
 
-parser.add_argument('path', type = str, help = 'directory to the folder that includes syllable folders with wave data')
-parser.add_argument('syllN', type = int, help = 'number of syllables to include in train/test data')
-parser.add_argument('-trainN', default = 30, type = int, help = 'number of training samples to use for each syllable (default = 30)')
-parser.add_argument('-cvalRuns', default = 1, type = int, help = 'Number of cross validation runs with different training/test data splits (default = 1)')
-parser.add_argument('-sampRate', default = 20000, type = int, help = 'Sampling Rate that raw data will be downsampled to (default = 20000)')
-parser.add_argument('-interpolType', default = 'IIR', type = str, help = 'type of interpolation to be used for downsampling. Can be "mean" or "IIR" which is a 8th order Chebichev filter (default = IIR)')
-parser.add_argument('-mfccN', default = 25, type = int, help = 'Number of mel frequency cepstral coefficients to extract for each mel frame (default = 25, which is the maximum possible)')
-parser.add_argument('-invCoeffOrder', default = False, type = bool, help = 'Boolean, if true: Extract last n mfcc instead of first n (default = False)')
-parser.add_argument('-winsize', default = 20, type = int, help = 'Size of the time-window to be used for mfcc extraction in ms (default = 20)')
-parser.add_argument('-melFramesN', default = 64, type = int, help = 'Desired number of time bins for mfcc data (default = 64)')
-parser.add_argument('-smoothL', default = 4, type = int, help = 'Desired length of the smoothed mfcc data (default = 4)')
-parser.add_argument('-polyOrder', default = 3, type = int, help = 'Order of the polynomial used for mfcc data smoothing (default = 3)')
-parser.add_argument('-incDer', default = [True,True], type = list, help = 'List of 2 booleans indicating whether to include 1./2. derivative of mfcc data or not (default = [True,True])')
-parser.add_argument('-nComp', default = 10, type = int, help = 'Number of principal components to use / dimensions to reduce data to (default = number of coeffs per timestep)')
-parser.add_argument('-usePCA', default = False, type = bool, help = 'If True, use PCA redused training and test data (default = False)')
-parser.add_argument('-resN', default = 10, type = int, help = 'Size of the reservoir to be used for conceptor learning (default = 10)')
-parser.add_argument('-specRad', default = 1.2, type = float, help ='Spectral radius of the connectivity matrix of the reservoir (default = 1.2)')
-parser.add_argument('-biasScale', default = 0.2, type = float, help = 'Scaling of the bias term to be introduced to each reservoir element (default = 0.2)')
-parser.add_argument('-inpScale', default = 1.0, type = float, help = 'Scaling of the input of the reservoir (default = 1.0)')
-parser.add_argument('-conn', default = 1.0, type = float, help = 'Downscaling of the reservoir connections (default = 1.0)')
-parser.add_argument('-gammaPos', default = 25, type = int, help = 'Aperture to be used for computation of the positive conceptors')
-parser.add_argument('-gammaNeg', default = 27, type = int, help = 'Aperture to be used for computation of the negative conceptors')
-parser.add_argument('-plotExample', default = False, type = bool, help = 'If true, plot raw & preprocessed mfcc data as well as conceptor evidences (default = False)')
-parser.add_argument('-targetDir', default = None, type = str, help = 'Subdirectory in which results are to be stored')
-parser.add_argument('-scriptsDir', default = None, type = str, help = 'Directory that includes all necessary scripts for this function (default = None. Assumes Scripts to be in same directory as runSyllClass.py)' )
+parser.add_argument(
+        'path', 
+        type = str, 
+        help = 'directory to the folder that includes syllable folders with wave data'
+        )
+parser.add_argument(
+        'syllN', 
+        type = int, 
+        help = 'number of syllables to include in train/test data'
+        )
+parser.add_argument(
+        '-trainN', 
+        default = 30, 
+        type = int, 
+        help = 'number of training samples to use for each syllable (default = 30)'
+        )
+parser.add_argument(
+        '-cvalRuns', 
+        default = 1, 
+        type = int, 
+        help = 'Number of cross validation runs with different training/test data splits (default = 1)'
+        )
+parser.add_argument(
+        '-sampRate', 
+        default = 20000, 
+        type = int, 
+        help = 'Sampling Rate that raw data will be downsampled to (default = 20000)'
+        )
+parser.add_argument(
+        '-interpolType', 
+        default = 'IIR', 
+        type = str, 
+        help = 'type of interpolation to be used for downsampling. Can be "mean" or "IIR" which is a 8th order Chebichev filter (default = IIR)'
+        )
+parser.add_argument(
+        '-mfccN', 
+        default = 25, 
+        type = int, 
+        help = 'Number of mel frequency cepstral coefficients to extract for each mel frame (default = 25, which is the maximum possible)'
+        )
+parser.add_argument(
+        '-invCoeffOrder', 
+        default = False, 
+        type = bool, 
+        help = 'Boolean, if true: Extract last n mfcc instead of first n (default = False)'
+        )
+parser.add_argument(
+        '-winsize', 
+        default = 20, 
+        type = int, 
+        help = 'Size of the time-window to be used for mfcc extraction in ms (default = 20)'
+        )
+parser.add_argument(
+        '-melFramesN', 
+        default = 64, 
+        type = int, 
+        help = 'Desired number of time bins for mfcc data (default = 64)'
+        )
+parser.add_argument(
+        '-smoothL', 
+        default = 4, 
+        type = int, 
+        help = 'Desired length of the smoothed mfcc data (default = 4)'
+        )
+parser.add_argument(
+        '-polyOrder', 
+        default = 3, 
+        type = int, 
+        help = 'Order of the polynomial used for mfcc data smoothing (default = 3)'
+        )
+parser.add_argument(
+        '-incDer', 
+        default = [True,True],
+        type = list, 
+        help = 'List of 2 booleans indicating whether to include 1./2. derivative of mfcc data or not (default = [True,True])'
+        )
+parser.add_argument(
+        '-nComp', 
+        default = 10, 
+        type = int, 
+        help = 'Number of principal components to use / dimensions to reduce data to (default = number of coeffs per timestep)'
+        )
+parser.add_argument(
+        '-usePCA', 
+        default = False, 
+        type = bool, 
+        help = 'If True, use PCA redused training and test data (default = False)'
+        )
+parser.add_argument(
+        '-resN', 
+        default = 10, 
+        type = int, 
+        help = 'Size of the reservoir to be used for conceptor learning (default = 10)'
+        )
+parser.add_argument(
+        '-specRad', 
+        default = 1.2, 
+        type = float, 
+        help ='Spectral radius of the connectivity matrix of the reservoir (default = 1.2)'
+        )
+parser.add_argument(
+        '-biasScale', 
+        default = 0.2, 
+        type = float, 
+        help = 'Scaling of the bias term to be introduced to each reservoir element (default = 0.2)'
+        )
+parser.add_argument(
+        '-inpScale', 
+        default = 1.0, 
+        type = float, 
+        help = 'Scaling of the input of the reservoir (default = 1.0)'
+        )
+parser.add_argument(
+        '-conn', 
+        default = 1.0, 
+        type = float, 
+        help = 'Downscaling of the reservoir connections (default = 1.0)'
+        )
+parser.add_argument(
+        '-gammaPos', 
+        default = 25, 
+        type = int, 
+        help = 'Aperture to be used for computation of the positive conceptors'
+        )
+parser.add_argument(
+        '-gammaNeg', 
+        default = 27, 
+        type = int, 
+        help = 'Aperture to be used for computation of the negative conceptors'
+        )
+parser.add_argument(
+        '-plotExample', 
+        default = False, 
+        type = bool, 
+        help = 'If true, plot raw & preprocessed mfcc data as well as conceptor evidences (default = False)'
+        )
+parser.add_argument(
+        '-targetDir', 
+        default = None, 
+        type = str, 
+        help = 'Subdirectory in which results are to be stored'
+        )
+parser.add_argument(
+        '-scriptsDir', 
+        default = None, 
+        type = str, 
+        help = 'Directory that includes all necessary scripts for this function (default = None. Assumes Scripts to be in same directory as runSyllClass.py)'
+        )
 
 #%%
 
@@ -260,4 +383,21 @@ parser.add_argument('-scriptsDir', default = None, type = str, help = 'Directory
 
 """ run script via python shell """
 
-results = runSyllClass('D:/Data/Projects/StudyProject/syll', 30, cvalRuns = 10, trainN = 30, plotExample = True, incDer = [True, True], usePCA = False, biasScale = 0.5, gammaNeg = 20, gammaPos = 25, invCoeffOrder = True, melFramesN = 64, mfccN = 20, smoothL = 5, specRad = 1.1, winsize = 20, scriptsDir = 'C:/Users/asus/Dropbox/Conceptors/Task1_Recognition/runSyllClassScripts')
+results = runSyllClass('D:/Data/Projects/StudyProject/syll',
+        30,
+        cvalRuns = 10,
+        trainN = 30,
+        plotExample = True,
+        incDer = [True, True],
+        usePCA = False,
+        biasScale = 0.5,
+        gammaNeg = 20,
+        gammaPos = 25,
+        invCoeffOrder = True,
+        melFramesN = 64,
+        mfccN = 20,
+        smoothL = 5,
+        specRad = 1.1,
+        winsize = 20,
+        scriptsDir = 'C:/Users/asus/Dropbox/Conceptors/Task1_Recognition/runSyllClassScripts'
+        )
