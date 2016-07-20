@@ -357,12 +357,15 @@ parser.add_argument(
 
 """ Run script via command window """
 
-args = parser.parse_args()
+try:
+    args = parser.parse_args()
+except:
+    sys.exit(0)
 
 results = runSyllClass(args.path, args.syllN, args.trainN, args.cvalRuns, args.sampRate, args.interpolType,
                        args.mfccN, args.invCoeffOrder, args.winsize, args.melFramesN, args.smoothL, args.polyOrder,
                        args.incDer, args.nComp, args.usePCA, args.resN, args.specRad, args.biasScale, args.inpScale, 
-                       args.conn, args.gammaPos, args.gammaNeg, args.plotExample, args.scriptsDir)
+                       args.conn, args.gammaPos, args.gammaNeg, args.plotExample)
 
 output = [results, args]
 
