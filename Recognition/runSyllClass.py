@@ -215,20 +215,21 @@ parser.add_argument(
         help = 'directory to the folder that includes syllable folders with wave data'
         )
 parser.add_argument(
-        'syllN', 
+        'syllN',
         type = int, 
+        default = 30,
         help = 'number of syllables to include in train/test data'
         )
 parser.add_argument(
-        '-trainN', 
-        default = 30, 
-        type = int, 
+        '-trainN',
+        default = 30,
+        type = int,
         help = 'number of training samples to use for each syllable (default = 30)'
         )
 parser.add_argument(
-        '-cvalRuns', 
-        default = 1, 
-        type = int, 
+        '-cvalRuns',
+        default = 10,
+        type = int,
         help = 'Number of cross validation runs with different training/test data splits (default = 1)'
         )
 parser.add_argument(
@@ -245,13 +246,13 @@ parser.add_argument(
         )
 parser.add_argument(
         '-mfccN', 
-        default = 25, 
+        default = 20, 
         type = int, 
         help = 'Number of mel frequency cepstral coefficients to extract for each mel frame (default = 25, which is the maximum possible)'
         )
 parser.add_argument(
         '-invCoeffOrder', 
-        default = False, 
+        default = True,
         type = bool, 
         help = 'Boolean, if true: Extract last n mfcc instead of first n (default = False)'
         )
@@ -269,7 +270,7 @@ parser.add_argument(
         )
 parser.add_argument(
         '-smoothL', 
-        default = 4, 
+        default = 5, 
         type = int, 
         help = 'Desired length of the smoothed mfcc data (default = 4)'
         )
@@ -305,13 +306,13 @@ parser.add_argument(
         )
 parser.add_argument(
         '-specRad', 
-        default = 1.2, 
+        default = 1.1, 
         type = float, 
         help ='Spectral radius of the connectivity matrix of the reservoir (default = 1.2)'
         )
 parser.add_argument(
         '-biasScale', 
-        default = 0.2, 
+        default = 0.5, 
         type = float, 
         help = 'Scaling of the bias term to be introduced to each reservoir element (default = 0.2)'
         )
@@ -335,13 +336,13 @@ parser.add_argument(
         )
 parser.add_argument(
         '-gammaNeg', 
-        default = 27, 
+        default = 20, 
         type = int, 
         help = 'Aperture to be used for computation of the negative conceptors'
         )
 parser.add_argument(
         '-plotExample', 
-        default = False, 
+        default = True,
         type = bool, 
         help = 'If true, plot raw & preprocessed mfcc data as well as conceptor evidences (default = False)'
         )
@@ -356,36 +357,17 @@ parser.add_argument(
 
 """ Run script via command window """
 
-#args = parser.parse_args()
-#
-#results = runSyllClass(args.path, args.syllN, args.trainN, args.cvalRuns, args.sampRate, args.interpolType,
-#                       args.mfccN, args.invCoeffOrder, args.winsize, args.melFramesN, args.smoothL, args.polyOrder,
-#                       args.incDer, args.nComp, args.usePCA, args.resN, args.specRad, args.biasScale, args.inpScale, 
-#                       args.conn, args.gammaPos, args.gammaNeg, args.plotExample, args.scriptsDir)
-#
-#output = [results, args]
-#
-#if not args.targetDir:
-#    pickle.dump(output, open('Results.pkl','wb'))
-#else:
-#    pickle.dump(output, open(os.path.abspath(args.targetDir + '/' + 'Results.pkl'), 'wb'))
+args = parser.parse_args()
 
-""" run script via python shell """
+results = runSyllClass(args.path, args.syllN, args.trainN, args.cvalRuns, args.sampRate, args.interpolType,
+                       args.mfccN, args.invCoeffOrder, args.winsize, args.melFramesN, args.smoothL, args.polyOrder,
+                       args.incDer, args.nComp, args.usePCA, args.resN, args.specRad, args.biasScale, args.inpScale, 
+                       args.conn, args.gammaPos, args.gammaNeg, args.plotExample, args.scriptsDir)
 
-results = runSyllClass('D:/Data/Projects/StudyProject/syll',
-        30,
-        cvalRuns = 10,
-        trainN = 30,
-        plotExample = True,
-        incDer = [True, True],
-        usePCA = False,
-        biasScale = 0.5,
-        gammaNeg = 20,
-        gammaPos = 25,
-        invCoeffOrder = True,
-        melFramesN = 64,
-        mfccN = 20,
-        smoothL = 5,
-        specRad = 1.1,
-        winsize = 20,
-        )
+output = [results, args]
+
+if not args.targetDir:
+    pickle.dump(output, open('Results.pkl','wb'))
+else:
+    pickle.dump(output, open(os.path.abspath(args.targetDir + '/' + 'Results.pkl'), 'wb'))
+
