@@ -7,9 +7,6 @@ Created on Tue Jan 26 11:15:55 2016
 
 import os.path
 import numpy as np
-#import sys
-#sys.path.append('C:/users/asus/Documents/GitHub/Conceptors/Classes')
-#sys.path.append('/Users/apple1/Dropbox/Uni/WS15_16/Studyproject/Conceptors/Classes')
 import reservoir_c as c
 import functions as fct
 import preprocessing as prep
@@ -26,7 +23,10 @@ class syllableClassifier:
     
         self.folder = fname
     
-    def prepData(self, n_syllables, n_train, n_test, syll_names = None, samples = None, SR = 20000, dsType = 'mean', mel_channels = 12, invCoeffOrder = False, winsize = 20, frames = 64, smoothLength = 5, polyOrder = 3, incDer = [True,True], nComp = 10, usePCA = False):
+    def prepData(self, n_syllables, n_train, n_test, syll_names = None, samples = None,
+            SR = 20000, dsType = 'mean', mel_channels = 12, invCoeffOrder = False, winsize = 20,
+            frames = 64, smoothLength = 5, polyOrder = 3, incDer = [True,True], nComp = 10, usePCA = False):
+
         """ Function that performs the following preprocessing steps on data in file:
         1. loading
         2. downsampling

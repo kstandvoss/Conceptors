@@ -54,7 +54,6 @@ def runSyllClass(path, syllN, trainN = 30, cvalRuns = 1, sampRate = 20000, inter
     :returns: cvalResults: Mean classification performance on test data over all runs for positive, negative and combined conceptors (list)
     """
     
-    
     path = os.path.abspath(path)
     
     """ assign parameters """
@@ -351,12 +350,6 @@ parser.add_argument(
         default = None, 
         type = str, 
         help = 'Subdirectory in which results are to be stored'
-        )
-parser.add_argument(
-        '-scriptsDir', 
-        default = None, 
-        type = str, 
-        help = 'Directory that includes all necessary scripts for this function (default = None. Assumes Scripts to be in same directory as runSyllClass.py)'
         )
 
 #%%
