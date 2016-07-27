@@ -16,6 +16,9 @@ import sys
 import crossSylidation as cS
 import syllableClassifier as sC
 
+import numpy as np
+np.random.seed(255)
+
 #%%
 
 """ Function """
