@@ -8,6 +8,10 @@ Created on Mon Jun 13 11:19:20 2016
 from matplotlib.pyplot import *
 import numpy as np
 from songClassifier import *
+import warnings
+warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
+
+#%matplotlib inline
 
 #%%
 # create list of syllables and initialize SongClassifier with it
@@ -52,6 +56,8 @@ for s in range(len(SC.Songs)):
 
 #%%
 # run song classification and plot gammas
-SC.run(pattRepRange = (10,20), nLayers = 2, useSyllRecog = True, SyllPath = 'D:/Data/Projects/StudyProject/syll', 
+SC.run(pattRepRange = (10,20), nLayers = 2, useSyllRecog = True, SyllPath = '/Users/pfaion/Desktop/syll',
        dataPrepParams = dataPrepParams, cLearningParams = cLearningParams, HFCParams = HFCParams)
 SC.H.plot_gamma()
+
+
