@@ -8,6 +8,9 @@ Created on Mon Jun 13 11:19:20 2016
 from matplotlib.pyplot import *
 import numpy as np
 from songClassifier import *
+# ignore the deprecation warnings
+import warnings
+warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
 #%%
 # create list of syllables and initialize SongClassifier with it
