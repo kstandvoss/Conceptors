@@ -52,6 +52,6 @@ for s in range(len(SC.Songs)):
 
 #%%
 # run song classification and plot gammas
-SC.run(pattRepRange = (10,20), nLayers = 2, useSyllRecog = True, SyllPath = 'D:/Data/Projects/StudyProject/syll', 
+SC.run(pattRepRange = (10,20), nLayers = 2, useSyllRecog = True, SyllPath = 'syll',
        dataPrepParams = dataPrepParams, cLearningParams = cLearningParams, HFCParams = HFCParams)
 SC.H.plot_gamma()
