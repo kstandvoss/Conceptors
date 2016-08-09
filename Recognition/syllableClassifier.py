@@ -72,12 +72,19 @@ class syllableClassifier:
         self.skipped_syllables = []
         
         if syll_names is not None:
+            # for i,syll in enumerate(syllables):
             for i,syll in enumerate(syll_names):
                 if np.sum(np.array(syllables) == syll) == 0:
                     print('Warning: Syllable ',syll,' not found in folder.')
                     self.n_syllables -= 1
                     continue
+
+                # print("DEBUG:", self.samples)
                 if not self.samples:
+                    # print("DEBUG:", self.folder + '/' + syll)
+                    # print("DEBUG:", self.testDataRaw)
+                    print("DEBUG:", self.n_test)
+                    print("DEBUG:", i)
                     self.trainDataRaw.append(prep.load_data(self.folder + '/' + syll, self.n_train, 0))
                     self.testDataRaw.append(prep.load_data(self.folder + '/' + syll, self.n_test[i], self.n_train))
                 else:
@@ -113,7 +120,7 @@ class syllableClassifier:
         
         self.trainDataDS = prep.downSample(self.trainDataRaw)
         self.testDataDS = prep.downSample(self.testDataRaw)
-        
+
         """ MFCC extraction """
         
         self.trainDataMel = prep.getMEL(self.trainDataDS, mel_channels, invCoeffOrder)
@@ -215,8 +222,7 @@ class syllableClassifier:
         class_pos = []
         class_neg = []
         class_comb = []
-        self.syllShapes = []
-        
+
         if pattern is not None:
             self.testData = np.array([self.testDataFinal[np.argmax(syll)] for syll in pattern])
         else:
@@ -224,7 +230,6 @@ class syllableClassifier:
         
         for syll_i, syllable in enumerate(self.testData):
             
-            self.syllShapes.append(syllable.shape)
             for sample in syllable:
                 
                 self.res.run([sample], t_learn = sample.shape[0], t_wash = 0, load = False)

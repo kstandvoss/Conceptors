@@ -98,10 +98,10 @@ def runSyllClass(path, syllN, trainN = 30, cvalRuns = 1, sampRate = 20000, inter
     if plotExample:
         
         sylls = figure(figsize=(15,18))
-        syllables = [2, 7]
+        syllables = [0,1]
         for syllable_i, syllable in enumerate(syllables):
             subplot(3, len(syllables), syllable_i + 1)
-            utteranceDataRaw = syllClass.trainDataDS[syllable - 1][0][0]
+            utteranceDataRaw = syllClass.trainDataDS[syllable][0][0]
             plot(utteranceDataRaw)
             xlim(0, 9000)
             ylim(-18000,18000)

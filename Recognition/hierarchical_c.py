@@ -10,7 +10,7 @@ import functions
 import numpy as np
 from matplotlib.pyplot import *
 import copy
-from numba import jit
+# from numba import jit
 
 class Hierarchical:
     
